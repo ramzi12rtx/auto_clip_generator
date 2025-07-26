@@ -24,17 +24,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Python dependencies
+      - name: 📦 Install Python dependencies
         run: |
-          pip uninstall -y moviepy oauth2client || true
-          rm -rf ~/.cache/pip
+          python -m pip install --upgrade pip
           pip install moviepy==1.0.3 Pillow==9.5.0 openai==0.28
           pip install imageio imageio-ffmpeg decorator proglog
           pip install elevenlabs requests
           pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
-          pip install pydub
-          pip install openai
-          pip install pytube moviepy
+          pip install pydub pytube
+          pip install git+https://github.com/openai/whisper.git  # لتفريغ الصوت
+
       - name: 🗂️ Create output folders
         run: |
           mkdir -p output
