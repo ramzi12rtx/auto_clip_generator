@@ -28,7 +28,8 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-
+          pip install moviepy
+         
       - name: 🗂️ Create output folders
         run: |
           mkdir -p output
