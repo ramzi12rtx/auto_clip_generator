@@ -1,34 +1,26 @@
-import os
-from utils.audio_transcript import transcribe_audio
-from utils.clip_selector import select_important_clips
-from utils.video_tools import extract_audio, cut_clips
-from utils.clip_editor import style_clip
+main.py
 
-INPUT_VIDEO = "input_video.mp4"
-OUTPUT_DIR = "output"
+import os from utils.fetch_video import download_youtube_video from utils.clip_editor import extract_clip from utils.subtitles import add_subtitles from utils.video_enhancer import enhance_video from utils.uploader import upload_to_youtube from datetime import datetime
 
-def main():
-    print("🎬 بدء استخراج المقاطع القصيرة...")
+def main(): print("🚀 بدء العملية...")
 
-    # 1. استخراج الصوت
-    audio_path = extract_audio(INPUT_VIDEO)
+# 1. تنزيل فيديو عشوائي من YouTube
+video_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"  # مثال، استبدله أو اجعل جلبه تلقائي
+video_path = download_youtube_video(video_url)
 
-    # 2. تحويل الصوت إلى نص
-    transcript_segments = transcribe_audio(audio_path)
+# 2. استخراج كليب قصير (مثلاً من الثانية 30 إلى 60)
+clip_path = extract_clip(video_path, start_time=30, duration=30)
 
-    # 3. اختيار أهم المقاطع من النص
-    clips = select_important_clips(transcript_segments)
+# 3. إضافة ترجمة تلقائية للكليب
+subtitled_path = add_subtitles(clip_path)
 
-    # 4. تقطيع الفيديو
-    clip_paths = cut_clips(INPUT_VIDEO, clips, OUTPUT_DIR)
+# 4. تحسين جودة الفيديو (فلاتر، تعديل الأبعاد، الخ)
+enhanced_path = enhance_video(subtitled_path)
 
-    # 5. منتجة المقاطع وإضافة مؤثرات
-    final_clips = [style_clip(path) for path in clip_paths]
+# 5. إعادة نشر الكليب على YouTube
+upload_to_youtube(enhanced_path)
 
-    print("✅ تم إنشاء المقاطع:")
-    for clip in final_clips:
-        print("▶", clip)
+print("✅ تم نشر الفيديو بنجاح!")
 
-if __name__ == "__main__":
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    main()
+if name == "main": main()
+
