@@ -34,7 +34,8 @@ jobs:
           pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
           pip install pydub
           pip install openai
-         
+      - name: Install dependencies
+  run: pip install -r requirements.txt
       - name: 🗂️ Create output folders
         run: |
           mkdir -p output
