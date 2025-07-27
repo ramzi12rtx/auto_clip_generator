@@ -34,7 +34,8 @@ jobs:
           pip install openai elevenlabs requests pytube pysrt
           pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
           pip install git+https://github.com/openai/whisper.git
-
+          pip install yt-dlp
+          
       - name: 🗂️ Create required folders
         run: |
           mkdir -p output
