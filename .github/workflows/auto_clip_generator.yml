@@ -24,20 +24,21 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 📦 Install Python dependencies
+      - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install moviepy==1.0.3 Pillow==9.5.0 openai==0.28
+          pip install -r requirements.txt || true
+          pip install moviepy==1.0.3 Pillow==9.5.0
           pip install imageio imageio-ffmpeg decorator proglog
-          pip install elevenlabs requests
+          pip install openai elevenlabs requests pytube pysrt
           pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
-          pip install pydub pytube
-          pip install git+https://github.com/openai/whisper.git  # لتفريغ الصوت
-          pip install pysrt
-      - name: 🗂️ Create output folders
+          pip install git+https://github.com/openai/whisper.git
+
+      - name: 🗂️ Create required folders
         run: |
           mkdir -p output
           mkdir -p assets
+          mkdir -p temp
 
       - name: ▶️ Run main script
         run: python main.py
