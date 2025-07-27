@@ -1,10 +1,13 @@
+import subprocess
+import uuid
+
 def download_youtube_video(url):
     try:
         output_path = f"assets/video_{uuid.uuid4().hex[:8]}.mp4"
         command = [
             "yt-dlp", "--no-playlist",
             "-f", "mp4",
-            "--no-check-certificate",  # ✅ يتخطى مشاكل SSL
+            "--no-check-certificate",  # لتجنب مشاكل SSL
             "-o", output_path,
             url
         ]
