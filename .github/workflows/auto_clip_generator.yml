@@ -42,6 +42,10 @@ jobs:
           mkdir -p output
           mkdir -p assets
           mkdir -p temp
-
+      
+      - name: 🔓 Decode token.pickle
+        run: |
+          echo "$YOUTUBE_TOKEN_B64" | base64 -d > token.pickle
+      
       - name: ▶️ Run main script
         run: python main.py
