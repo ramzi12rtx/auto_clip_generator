@@ -1,19 +1,18 @@
-from googleapiclient.discovery import build
+import requests
+import os
 
-def fetch_trending_videos(api_key, region_code='US', max_results=5):
-    youtube = build('youtube', 'v3', developerKey=api_key)
-    resp = youtube.videos().list(
-        part='snippet,statistics',
-        chart='mostPopular',
-        regionCode=region_code,
-        maxResults=max_results
-    ).execute()
-    vids = []
-    for item in resp.get('items', []):
-        vids.append({
-            'video_id': item['id'],
-            'title': item['snippet']['title'],
-            'channel': item['snippet']['channelTitle'],
-            'url': f'https://www.youtube.com/watch?v={item["id"]}'
-        })
-    return vids
+def get_trending_video_url():
+    api_key = os.getenv("YOUTUBE_API_KEY")
+    if not api_key:
+        raise Exception("❌ YOUTUBE_API_KEY not set in environment variables.")
+
+    url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=10&regionCode=US&videoCategoryId=0&key={api_key}"
+
+    response = requests.get(url)
+    data = response.json()
+
+    for item in data.get("items", []):
+        if item["status"]["license"] == "creativeCommon":
+            return f"https://www.youtube.com/watch?v={item['id']}"
+
+    raise Exception("❌ لا يوجد فيديوهات Creative Commons في الترند.")
