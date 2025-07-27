@@ -1,25 +1,31 @@
-import requests
-import uuid
 import os
+import requests
+import random
+import uuid
 
-def download_video_from_pexels(query="nature"):
+def download_free_video_from_pexels(query="technology", output_folder="assets"):
     api_key = os.getenv("PEXELS_API_KEY")
-    headers = {"Authorization": api_key}
-    url = f"https://api.pexels.com/videos/search?query={query}&per_page=1"
+    headers = {
+        "Authorization": api_key
+    }
 
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-        video_url = data["videos"][0]["video_files"][0]["link"]
+    url = f"https://api.pexels.com/videos/search?query={query}&per_page=10"
+    response = requests.get(url, headers=headers)
+    data = response.json()
 
-        output_path = f"assets/video_{uuid.uuid4().hex[:8]}.mp4"
-        os.makedirs("assets", exist_ok=True)
-        video_data = requests.get(video_url)
-        with open(output_path, "wb") as f:
-            f.write(video_data.content)
-        print(f"✅ تم تحميل فيديو من Pexels: {output_path}")
-        return output_path
-    except Exception as e:
-        print("❌ Error downloading from Pexels:", e)
-        return None
+    if "videos" not in data or len(data["videos"]) == 0:
+        raise Exception("❌ No videos found on Pexels for this query.")
+
+    video_url = random.choice(data["videos"])["video_files"][0]["link"]
+    filename = f"video_{uuid.uuid4().hex[:8]}.mp4"
+    output_path = os.path.join(output_folder, filename)
+
+    print(f"🎥 Downloading video from Pexels: {video_url}")
+    video_data = requests.get(video_url).content
+    os.makedirs(output_folder, exist_ok=True)
+
+    with open(output_path, "wb") as f:
+        f.write(video_data)
+
+    print(f"✅ تم تحميل الفيديو إلى: {output_path}")
+    return output_path
