@@ -1,16 +1,40 @@
-def get_trending_video_url():
-    query = "motivational speeches"
-    api_key = os.getenv("YOUTUBE_API_KEY")
-    if not api_key:
-        raise Exception("❌ YOUTUBE_API_KEY not set in environment variables.")
+# utils/uploader.py
 
-    url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&q={query}&videoLicense=creativeCommon&key={api_key}"
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+import os
+import pickle
 
-    response = requests.get(url)
-    data = response.json()
+def upload_to_youtube(video_path, title="AI Generated Clip", description="Clip generated automatically"):
+    # تحميل التوكن المحفوظ
+    if not os.path.exists("token.pickle"):
+        raise Exception("❌ token.pickle not found. You must authenticate first.")
 
-    for item in data.get("items", []):
-        video_id = item["id"]["videoId"]
-        return f"https://www.youtube.com/watch?v={video_id}"
+    with open("token.pickle", "rb") as token_file:
+        creds = pickle.load(token_file)
 
-    raise Exception("❌ لم يتم العثور على فيديوهات Creative Commons.")
+    youtube = build("youtube", "v3", credentials=creds)
+
+    request_body = {
+        "snippet": {
+            "title": title,
+            "description": description,
+            "tags": ["shorts", "AI", "clip"],
+            "categoryId": "22"
+        },
+        "status": {
+            "privacyStatus": "public"
+        }
+    }
+
+    media = MediaFileUpload(video_path)
+
+    request = youtube.videos().insert(
+        part="snippet,status",
+        body=request_body,
+        media_body=media
+    )
+
+    response = request.execute()
+    print(f"✅ تم رفع الفيديو: https://youtu.be/{response['id']}")
